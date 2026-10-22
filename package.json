@@ -1,0 +1,56 @@
+{
+  "name": "@spinetree/pi-compact-tree",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Compact process tree for Pi's terminal UI: tool calls fold into one-line summaries and thinking into titles, with a borderless input and a one-line footer.",
+  "keywords": [
+    "pi-package",
+    "pi",
+    "pi-coding-agent",
+    "pi-extension",
+    "tui",
+    "ui",
+    "compact",
+    "theme"
+  ],
+  "license": "Apache-2.0",
+  "author": "GhabiX",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GhabiX/pi-compact-tree.git"
+  },
+  "bugs": {
+    "url": "https://github.com/GhabiX/pi-compact-tree/issues"
+  },
+  "homepage": "https://github.com/GhabiX/pi-compact-tree#readme",
+  "pi": {
+    "extensions": [
+      "./extensions/compact-ui2tree.ts"
+    ],
+    "themes": [
+      "./themes"
+    ],
+    "image": "https://raw.githubusercontent.com/GhabiX/pi-compact-tree/main/media/compact-tree.gif"
+  },
+  "files": [
+    "extensions",
+    "themes",
+    "README.md",
+    "README.zh-CN.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "node --experimental-strip-types --import ./test/register.mjs --test test/*.test.mjs",
+    "test:e2e": "node test/e2e/run.mjs"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-coding-agent": "*",
+    "@earendil-works/pi-tui": "*"
+  },
+  "engines": {
+    "node": ">=22.19.0"
+  }
+}
