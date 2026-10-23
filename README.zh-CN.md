@@ -29,7 +29,7 @@ Pi 终端界面的紧凑过程视图。agent 的每一步都收成一行：连�
 ## 安装
 
 ```sh
-pi install npm:@spinetree/pi-compact-tree
+pi install npm:@spinejit/pi-compact-tree
 ```
 
 本插件按 Pi 的 regular 终端模式设计。Pi 默认是 fullscreen 模式，需要在 `/settings` 或 `~/.pi/agent/settings.json` 中设置：
@@ -70,7 +70,7 @@ npm run test:e2e  # 在 tmux 里用脚本化模型跑真实会话
 
 端到端测试需要 tmux，以及 `PATH` 上的 `pi`。测试在 tmux 中启动 Pi，并单独设置 `PI_CODING_AGENT_DIR`，不会改动本机的用户 Pi 配置。`user_stack` 场景只在点名时运行（`node test/e2e/run.mjs user_stack`）：它加载你自己 Pi 设置里的本地包，其中有 SpineTree 时需要 `st` 命令。
 
-## @spinetree 的其他插件
+## @spinejit 的其他插件
 
 - [pi-btw-cached](https://github.com/GhabiX/pi-btw-cached)：在主会话自己的请求上发起 `/btw` 侧问。
 - [pi-background-job](https://github.com/GhabiX/pi-background-job)：后台任务与输出监视，事件发生时自动通知 agent。

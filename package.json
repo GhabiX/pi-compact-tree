@@ -1,5 +1,5 @@
 {
-  "name": "@spinetree/pi-compact-tree",
+  "name": "@spinejit/pi-compact-tree",
   "version": "0.1.0",
   "type": "module",
   "description": "Compact process tree for Pi's terminal UI: tool calls fold into one-line summaries and thinking into titles, with a borderless input and a one-line footer.",

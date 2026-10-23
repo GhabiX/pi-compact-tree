@@ -29,7 +29,7 @@ The same session, with and without the extension:
 ## Install
 
 ```sh
-pi install npm:@spinetree/pi-compact-tree
+pi install npm:@spinejit/pi-compact-tree
 ```
 
 The extension is built for Pi's regular terminal mode. Because Pi defaults to fullscreen mode, set this in `/settings` or in `~/.pi/agent/settings.json`:
@@ -70,7 +70,7 @@ npm run test:e2e  # tmux sessions with a scripted model
 
 End-to-end tests need tmux and `pi` on `PATH`. They launch Pi inside tmux with a separate `PI_CODING_AGENT_DIR`, leaving your user Pi settings untouched. The `user_stack` scenario runs only when named (`node test/e2e/run.mjs user_stack`): it loads the local packages from your own Pi settings, and needs the `st` CLI when SpineTree is among them.
 
-## More from @spinetree
+## More from @spinejit
 
 - [pi-btw-cached](https://github.com/GhabiX/pi-btw-cached): `/btw` side questions on the main session's own request.
 - [pi-background-job](https://github.com/GhabiX/pi-background-job): background jobs and output monitors that wake the agent when events occur.
