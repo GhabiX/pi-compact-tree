@@ -123,3 +123,24 @@ test("truecolor uses softened syntax roles and indexed/default colors stay in th
   assert.ok(defaultLine.includes("\x1b[39m~/project\x1b[39m"));
   assert.notEqual(renderFooter(regular, 80, palettes[0].theme)[0], renderFooter(regular, 80, palettes[2].theme)[0]);
 });
+
+test("extension statuses render on a second row, sorted by id, like Pi's native footer", () => {
+  const statuses = new Map([["zeta", "\x1b[32mZ ok\x1b[39m"], ["alpha", "A\nmulti\tline"], ["empty", "  "]]);
+  const rows = renderFooter({ ...regular, statuses }, 80, palettes[0].theme);
+  assert.equal(rows.length, 2);
+  assert.match(stripTerminalSequences(rows[0]), /^  gpt-6-astra xhigh · ~\/project/u);
+  assert.equal(stripTerminalSequences(rows[1]), "  A multi line Z ok");
+  assert.ok(rows[1].includes("\x1b[32mZ ok"), "extension styling is preserved");
+  assert.doesNotMatch(rows[1], /[\r\n\t]/u);
+});
+
+test("no statuses keeps the single-row footer and long statuses stay within width", () => {
+  assert.equal(renderFooter({ ...regular, statuses: new Map() }, 80, palettes[0].theme).length, 1);
+  assert.equal(renderFooter({ ...regular, statuses: new Map([["a", "   "]]) }, 80, palettes[0].theme).length, 1);
+  const statuses = new Map([["long", "状态👩‍💻".repeat(40)]]);
+  for (let width = 1; width <= 120; width++) {
+    const rows = renderFooter({ ...regular, statuses }, width, palettes[0].theme);
+    assert.equal(rows.length, 2);
+    assert.ok(visibleWidth(rows[1]) <= width, `${width}: ${JSON.stringify(rows[1])}`);
+  }
+});

@@ -10,6 +10,8 @@ export type FooterSnapshot = {
   model?: { id?: string; reasoning?: boolean };
   thinkingLevel?: string;
   context?: { percent: number | null };
+  /** Texts published by other extensions with `ctx.ui.setStatus()`, keyed by status id. */
+  statuses?: ReadonlyMap<string, string>;
 };
 
 type FooterTheme = Pick<Theme, "getFgAnsi" | "fg">;
@@ -27,6 +29,26 @@ function sanitize(text: string): string {
   return stripTerminalSequences(text)
     .replace(/[\u0000-\u001f\u007f-\u009f\u2028\u2029]/gu, " ")
     .replace(/ +/gu, " ").trim();
+}
+
+/** Keep extension styling, but never let a status add rows. Mirrors Pi's native footer. */
+function sanitizeStatus(text: string): string {
+  return text.replace(/[\r\n\t\u2028\u2029]/gu, " ").replace(/ +/gu, " ").trim();
+}
+
+/** Extension statuses, sorted by id like Pi's native footer, on one inset row. */
+function renderStatuses(statuses: FooterSnapshot["statuses"], width: number, theme: FooterTheme): string[] {
+  if (!statuses || statuses.size === 0) return [];
+  const line = Array.from(statuses.entries())
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([, text]) => sanitizeStatus(String(text ?? "")))
+    .filter(Boolean)
+    .join(" ");
+  if (!line) return [];
+  const inset = Math.min(2, width - 1);
+  const rightInset = width >= 4 ? 1 : 0;
+  const available = Math.max(1, width - inset - rightInset);
+  return [" ".repeat(inset) + truncateToWidth(line, available, theme.fg("dim", "…"))];
 }
 
 /** Draw accents at 85% saturation without changing Pi's chosen color mode. */
@@ -65,7 +87,8 @@ export function renderFooter(snapshot: FooterSnapshot, width: number, theme: Foo
     left += theme.fg("dim", " · ") + accent(theme, "syntaxString", truncateToWidth(path, pathBudget, "…"));
   }
   const start = " ".repeat(inset) + left;
-  if (!right) return [start];
+  const statuses = renderStatuses(snapshot.statuses, safeWidth, theme);
+  if (!right) return [start, ...statuses];
   const gap = safeWidth - rightInset - visibleWidth(start) - visibleWidth(right);
-  return [start + " ".repeat(gap) + theme.fg("muted", right) + " ".repeat(rightInset)];
+  return [start + " ".repeat(gap) + theme.fg("muted", right) + " ".repeat(rightInset), ...statuses];
 }

@@ -128,7 +128,8 @@ let frameDepth = 0;
 let confirmPaint = false;
 let excludedComponents: ReadonlySet<Child> | undefined;
 let nativeComponents: ReadonlySet<Child> | undefined;
-function snapshotFooter(ctx: ExtensionContext): FooterSnapshot {
+type FooterStatusSource = { getExtensionStatuses?: () => ReadonlyMap<string, string> } | undefined;
+function snapshotFooter(ctx: ExtensionContext, footerData?: FooterStatusSource): FooterSnapshot {
   const model = ctx.model
     ? {
         id: ctx.model.id,
@@ -141,6 +142,7 @@ function snapshotFooter(ctx: ExtensionContext): FooterSnapshot {
     model,
     thinkingLevel: ctx.thinkingLevel,
     context: ctx.getContextUsage(),
+    statuses: footerData?.getExtensionStatuses?.(),
   };
 }
 
@@ -157,7 +159,7 @@ function interruptPlayback(state: PatchState): void {
 /** `redraw` asks the host for one cleared full redraw once the footer is mounted. */
 function installFooter(ctx: ExtensionContext, state: PatchState, redraw: boolean): () => void {
   let dispose: (() => void) | undefined;
-  ctx.ui.setFooter((tui) => {
+  ctx.ui.setFooter((tui, _theme, footerData) => {
     dispose?.();
     let input: { component: Child; style?: InputStyle } | undefined;
     let paintRoot: Container | undefined;
@@ -257,7 +259,7 @@ function installFooter(ctx: ExtensionContext, state: PatchState, redraw: boolean
     });
     const footer = {
       render(width: number) {
-        return renderFooter(snapshotFooter(ctx), width, ctx.ui.theme);
+        return renderFooter(snapshotFooter(ctx, footerData), width, ctx.ui.theme);
       },
       invalidate() {},
       dispose() {
